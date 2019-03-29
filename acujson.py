@@ -1,19 +1,23 @@
 #!/usr/bin/python
 import json
+import time
 import sys
 import graphyte
-graphyte.init('192.168.1.136', prefix='acurite')
+import statsd
+import socket
+hostname =(socket.gethostname())
 
+start = time.time()
+graphyte.init('192.168.1.136', prefix='acurite')
+c = statsd.StatsClient('192.168.1.136', 8125, prefix='acu')
 
 data = []
 
 with open('acu.json') as f:
     lines = f.readlines()
-    for line in lines[-10:]:
+    for line in lines[-40:]:
 	data.append(json.loads(line))
-    #line = (list(f)[-1])
 
-    #data.append(json.loads(line))
 
     for item in data:
         #print item
@@ -37,3 +41,7 @@ with open('acu.json') as f:
         except:
             print("Unexpected error:", sys.exc_info()[0])
             raise
+# You must convert to milliseconds:
+dt = int((time.time() - start) * 1000)
+c.timing(hostname + '.runtime', dt)
+c.incr(hostname + '.loglines' , len(lines))
