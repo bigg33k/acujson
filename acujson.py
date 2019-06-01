@@ -5,12 +5,15 @@ import sys
 import graphyte
 import statsd
 import socket
-hostname =(socket.gethostname())
+import syslog
 
 start = time.time()
+hostname =(socket.gethostname())
 graphyte.init('192.168.1.136', prefix='acurite')
 c = statsd.StatsClient('192.168.1.136', 8125, prefix='acu')
 
+DEBUG = True
+#DEBUG = False
 data = []
 
 with open('acu.json') as f:
@@ -20,21 +23,26 @@ with open('acu.json') as f:
 
 
     for item in data:
-        #print item
         try:
+	    syslog.syslog(str(item))
             pass
-            print ('id.' + str(item["id"]))
+            if DEBUG:
+		 print ('id.' + str(item["id"]))
             id = str(item["id"])
             if item['id'] != -149:
-                print ( id + ':temperature_C: ' + str(item["temperature_C"]))
+		if DEBUG:
+                	print ( id + ':temperature_C: ' + str(item["temperature_C"]))
                 temperature_H = 9.0/5.0 * item["temperature_C"] + 32
                 graphyte.send(id + '.temperature_C',item["temperature_C"])
-                print ( id + ':temperature_H: ' + str(temperature_H))
+		if DEBUG:
+                	print ( id + ':temperature_H: ' + str(temperature_H))
                 graphyte.send(id + '.temperature_H', temperature_H)
 		try:
-                	print ( id + ':humidity: ' + str(item["humidity"]))
+			if DEBUG:
+                		print ( id + ':humidity: ' + str(item["humidity"]))
                 	graphyte.send(id + '.humidity',item["humidity"])
-                	print ( id + ':battery_low: ' + str(item["battery_low"]))
+			if DEBUG:
+                		print ( id + ':battery_low: ' + str(item["battery_low"]))
                 	graphyte.send(id + '.battery_low',item["battery_low"])
 		except:
 			pass
