@@ -9,7 +9,7 @@ hostname =(socket.gethostname())
 
 start = time.time()
 
-auth_token = '161384:eyJrIjoiMTI4MDViMjJhMjM1NmVkMzk3NzMxNmE3NjJjNDFhM2Y2N2ZlYTI0ZSIsIm4iOiJncmFwaGl0ZSIsImlkIjoyMzkxMDJ9'
+auth_token = ''
 header = {'Authorization': 'Bearer ' + auth_token,  'Content-Type': 'application/json'}
 data = []
 payload = []
