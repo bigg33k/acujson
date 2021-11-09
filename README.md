@@ -10,3 +10,6 @@ I run both from a crontab
 @reboot /usr/local/bin/rtl_433 -F json:acu.json & 
 * * * * * /home/pi/acujson.py
 ```
+
+@reboot /usr/local/bin/rtl_433 -F json:acu.json & 
+* * * * * /home/pi/getacu.py
